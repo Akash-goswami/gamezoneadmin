@@ -1,144 +1,109 @@
-import { useState, useEffect } from 'react';
-import AddGameModal from './AddGameModal';
+import { useState, useContext } from "react";
+import AddGameModal from "./AddGameModal";
+import { BackgroundContext } from "./context/BackgroundContext";
+import EditGameModal from "./EditGameModal";
 
 export default function Games() {
-  // ✅ Static Data
-  const dummyGames = [
-    {
-      id: 1,
-      name: "Head & Tail",
-      redirectUrl: "https://game1.com",
-      code: "HT01",
-      image: "https://www.cdmi.in/courses@2x/2D3D-Game-Design.webp",
-    },
-    {
-      id: 2,
-      name: "Spin Wheel",
-      redirectUrl: "https://game2.com",
-      code: "SW02",
-      image: "https://www.cdmi.in/courses@2x/2D3D-Game-Design.webp",
-    },
-    {
-      id: 3,
-      name: "Lucky Dice",
-      redirectUrl: "https://game3.com",
-      code: "LD03",
-      image: "https://www.cdmi.in/courses@2x/2D3D-Game-Design.webp",
-    },
-  ];
+  const { games, setGames, loading } = useContext(BackgroundContext);
 
-  const [games, setGames] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    // ❌ API CALL DISABLED
-    // fetchGames();
-
-    // ✅ Use Static Data
-    setGames(dummyGames);
-    setLoading(false);
-  }, []);
-
-  // ❌ API function (commented)
-  /*
-  const fetchGames = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/games', {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      const data = await response.json();
-      setGames(data.games || []);
-    } catch (err) {
-      setError('Failed to load games');
-    } finally {
-      setLoading(false);
-    }
-  };
-  */
+  const [editGame, setEditGame] = useState(null);
 
   const handleAddGame = (newGame) => {
-    setGames([...games, { ...newGame, id: Date.now() }]);
+    const gameToAdd = {
+      ...newGame,
+      id: Date.now(),
+      isActive: true,
+    };
+    setGames([...games, gameToAdd]);
     setShowModal(false);
   };
 
-  const handleDeleteGame = async (id) => {
-    if (!confirm('Delete this game?')) return;
-
-    // ❌ API DELETE DISABLED
-    /*
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`http://localhost:5000/api/games/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-    } catch (err) {
-      alert('Failed to delete game');
-    }
-    */
-
-    // ✅ Local delete
-    setGames(games.filter(g => g.id !== id));
+  const handleUpdateGame = (updatedGame) => {
+    setGames((prev) =>
+      prev.map((g) => (g.id === updatedGame.id ? updatedGame : g))
+    );
+    setEditGame(null);
   };
 
-  const filteredGames = games.filter(g =>
+  const handleDeleteGame = (id) => {
+    setGames(games.filter((g) => g.id !== id));
+  };
+
+  const toggleActive = (id) => {
+    setGames((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, isActive: !g.isActive } : g
+      )
+    );
+  };
+
+  const filteredGames = games.filter((g) =>
     g.name?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="loading">Loading games...</div>;
+  if (loading) return <div className="loading">Loading...</div>;
+  if (!games.length) return <div className="loading">No games available...</div>;
 
   return (
-    <div className="games-container">
-      <div className="games-header">
+    <div className="container">
+      <div className="header">
         <h2>Games Management</h2>
         <button className="add-btn" onClick={() => setShowModal(true)}>
           + Add Game
         </button>
       </div>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search games..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Search..."
+        className="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-      {error && <div className="error-message">{error}</div>}
-
-      <table className="games-table">
+      <table className="table">
         <thead>
           <tr>
-            <th>Image</th>
-            <th>Game Name</th>
-            <th>Redirect URL</th>
+            <th>Name</th>
+            <th>URL</th>
             <th>Code</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          {filteredGames.map(game => (
+          {filteredGames.map((game) => (
             <tr key={game.id}>
-              <td>
-                <img
-                  src={game.image || ''}
-                  alt={game.name}
-                  className="game-image"
-                  onError={(e) => (e.target.src = '')}
-                />
-              </td>
               <td>{game.name}</td>
-              <td>{game.redirectUrl}</td>
-              <td>{game.code}</td>
-              <td><span className="status-badge">Active</span></td>
               <td>
-                <button className="edit-btn">Edit</button>
+                <a href={game.redirectUrl} target="_blank">
+                  {game.redirectUrl}
+                </a>
+              </td>
+              <td>{game.code}</td>
+
+             <td>
+  <label className="switch">
+    <input
+      type="checkbox"
+      checked={game.isActive}
+      onChange={() => toggleActive(game.id)}
+    />
+    <span className="slider"></span>
+  </label>
+</td>
+
+              <td>
+                <button
+                  className="edit-btn"
+                  onClick={() => setEditGame(game)}
+                >
+                  Edit
+                </button>
+
                 <button
                   className="delete-btn"
                   onClick={() => handleDeleteGame(game.id)}
@@ -154,7 +119,15 @@ export default function Games() {
       {showModal && (
         <AddGameModal
           onClose={() => setShowModal(false)}
-          onAdd={handleAddGame}
+          onSubmit={handleAddGame}
+        />
+      )}
+
+      {editGame && (
+        <EditGameModal
+          editData={editGame}
+          onClose={() => setEditGame(null)}
+          onSubmit={handleUpdateGame}
         />
       )}
     </div>

@@ -9,9 +9,12 @@ import './assets/css/LoginPageAdmin.css'
 import './assets/css/Operators.css'
 import './assets/css/Report.css'
 import App from './App';
+import { BackgroundContextProvider } from './context/BackgroundContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <BackgroundContextProvider>
     <App />
+    </BackgroundContextProvider>
   </React.StrictMode>,
 );

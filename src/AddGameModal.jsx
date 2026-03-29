@@ -1,46 +1,53 @@
-import { useState } from 'react';
+import { useContext, useState } from "react";
+import { BackgroundContext } from "./context/BackgroundContext";
 
-export default function AddGameModal({ onClose, onAdd }) {
+export default function AddGameModal({ onClose }) {
+  const { addGame } = useContext(BackgroundContext);
+
   const [formData, setFormData] = useState({
-    name: '',
-    redirectUrl: '',
-    backedUrl: '',
-    code: '',
+    name: "",
+    redirectUrl: "",
+    backendUrl: "",
+    code: "",
   });
-  const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.name || !formData.redirectUrl) {
-      alert('Please fill all fields');
+      alert("Please fill required fields");
       return;
     }
-    onAdd(formData);
-    setFormData({ name: '', redirectUrl: '', backedUrl: '', code: '' });
-    setImage(null);
+
+    const success = await addGame(formData);
+
+    if (success) {
+      setFormData({
+        name: "",
+        redirectUrl: "",
+        backendUrl: "",
+        code: "",
+      });
+      onClose();
+    }
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        
         <div className="modal-header">
-          <h2>Add New Game</h2>
+          <h2>🎮 Add New Game</h2>
           <button className="close-btn" onClick={onClose}>✕</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="modal-form">
+          
           <div className="form-group">
             <label>Game Name</label>
             <input
@@ -49,7 +56,6 @@ export default function AddGameModal({ onClose, onAdd }) {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter game name"
-              required
             />
           </div>
 
@@ -61,18 +67,17 @@ export default function AddGameModal({ onClose, onAdd }) {
               value={formData.redirectUrl}
               onChange={handleChange}
               placeholder="https://example.com"
-              required
             />
           </div>
 
           <div className="form-group">
-            <label>Backed URL</label>
+            <label>Backend URL</label>
             <input
               type="url"
-              name="backedUrl"
-              value={formData.backedUrl}
+              name="backendUrl"
+              value={formData.backendUrl}
               onChange={handleChange}
-              placeholder="https://backed.example.com"
+              placeholder="https://backend.example.com"
             />
           </div>
 
@@ -87,34 +92,6 @@ export default function AddGameModal({ onClose, onAdd }) {
             />
           </div>
 
-          <div className="form-group">
-            <label>Game Image</label>
-            <div className="image-upload">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                id="image-input"
-              />
-              {image ? (
-                <div className="image-preview">
-                  ✓ {image.name}
-                  <button
-                    type="button"
-                    onClick={() => setImage(null)}
-                    className="remove-image"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ) : (
-                <label htmlFor="image-input" className="upload-label">
-                  📷 Click to upload image
-                </label>
-              )}
-            </div>
-          </div>
-
           <div className="form-actions">
             <button type="button" className="cancel-btn" onClick={onClose}>
               Cancel
@@ -123,6 +100,7 @@ export default function AddGameModal({ onClose, onAdd }) {
               Add Game
             </button>
           </div>
+
         </form>
       </div>
     </div>

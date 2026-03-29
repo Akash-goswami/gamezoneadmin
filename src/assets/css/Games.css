@@ -1,134 +1,227 @@
-.games-container {
-  width: 100%;
+
+
+/* 📦 Container */
+.container {
+  padding: 30px;
 }
 
-.games-header {
+/* 🔝 Header */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
 }
 
-.games-header h2 {
-  margin: 0;
-  color: #333;
+.header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
 }
 
+/* ➕ Add Button */
 .add-btn {
-  padding: 10px 20px;
-  background: #2ecc71;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: white;
+  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .add-btn:hover {
-  background: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
 }
 
-.search-bar {
+/* 🔍 Search */
+.search {
+  width: 320px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  outline: none;
   margin-bottom: 20px;
+  transition: 0.2s;
 }
 
-.search-bar input {
+.search:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* 🧾 Table Wrapper */
+.table {
   width: 100%;
-  max-width: 300px;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* 📌 Table Head */
+.table th {
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: #475569;
+  background: rgba(241, 245, 249, 0.8);
+}
+
+/* 📌 Table Body */
+.table td {
+  padding: 14px;
+  text-align: center;
+  color: #334155;
   font-size: 14px;
 }
 
-.games-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* ✨ Row hover */
+.table tbody tr {
+  transition: 0.2s;
 }
 
-.games-table thead {
-  background: #f5f5f5;
+.table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.05);
+  transform: scale(1.01);
 }
 
-.games-table th,
-.games-table td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+/* 🔗 Link */
+.table a {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-.games-table th {
-  font-weight: bold;
-  color: #333;
+.table a:hover {
+  text-decoration: underline;
 }
 
-.games-table tbody tr:hover {
-  background: #fafafa;
-}
-
-.game-image {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 6px;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-
-.status-badge {
-  background: #d4edda;
-  color: #155724;
-  padding: 4px 12px;
+/* 🔄 Status Button */
+.status {
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: 12px;
-}
-
-.edit-btn,
-.delete-btn {
-  padding: 6px 12px;
-  margin: 0 5px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
   font-size: 12px;
-  transition: all 0.3s;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.edit-btn {
-  background: #3498db;
+/* 🟢 Active */
+.status.active {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
+}
+
+.status.active:hover {
+  background: #16a34a;
   color: white;
+}
+
+/* 🔴 Inactive */
+.status.inactive {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+}
+
+.status.inactive:hover {
+  background: #dc2626;
+  color: white;
+}
+
+/* ✏️ Edit Button */
+.edit-btn {
+  background: rgba(251, 191, 36, 0.15);
+  color: #d97706;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .edit-btn:hover {
-  background: #2980b9;
-}
-
-.delete-btn {
-  background: #e74c3c;
+  background: #f59e0b;
   color: white;
 }
 
+/* 🗑 Delete Button */
+.delete-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
 .delete-btn:hover {
-  background: #c0392b;
+  background: #dc2626;
+  color: white;
 }
 
-.loading,
-.error-message {
-  padding: 20px;
+/* ⏳ Loading */
+.loading {
   text-align: center;
-  background: white;
-  border-radius: 8px;
+  padding: 40px;
+  font-size: 18px;
+  color: #64748b;
 }
 
-.error-message {
-  background: #ffe0e0;
-  color: #c0392b;
+/* 🔘 Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 🎚 Slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #e2e8f0;
+  border-radius: 34px;
+  transition: 0.4s;
+}
+
+/* ⚪ Circle */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+/* ✅ Active state */
+.switch input:checked + .slider {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* ✨ Hover effect */
+.slider:hover {
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
