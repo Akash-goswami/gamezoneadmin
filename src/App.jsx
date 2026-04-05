@@ -1,18 +1,22 @@
-import { useState, useEffect } from 'react';
-import LoginPageAdmin from './LoginPageAdmin';
-import Dashboard from './Dashboard';
-import Games from './Games';
-import Operators from './Operators';
-import Report from './Report';
+import { useState, useEffect } from "react";
+import LoginPageAdmin from "./components/LoginPageAdmin";
+import Header from "./components/Header";
+import GameSearch from "./components/GameSearch";
+import Footer from "./components/Footer";
+import { ToastContainer, toast } from "react-toastify";
+import Statement from "./components/Statement";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [currentPage, setCurrentPage] = useState('dashboard');
+
+  // 🔥 PAGE CONTROL
+  const [currentPage, setCurrentPage] = useState("dashboard");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
       setIsLoggedIn(true);
@@ -22,93 +26,43 @@ export default function App() {
   const handleLogin = (userData) => {
     setUser(userData);
     setIsLoggedIn(true);
-    setCurrentPage('dashboard');
+    setCurrentPage("dashboard");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    toast.success("Logged out successfully ✅");
+
     setUser(null);
     setIsLoggedIn(false);
-    setCurrentPage('dashboard');
   };
-
-  // ✅ FIX: Role-based access
-  const isAdmin = user?.role === 'Admin';
 
   if (!isLoggedIn) {
     return <LoginPageAdmin onLogin={handleLogin} />;
   }
 
   return (
-    <div className="admin-container">
-      <div className="sidebar">
-        <div className="logo">
-          <h2>⚙️ Game Zone</h2>
-        </div>
+    <div className="flex flex-col min-h-screen bg-[#070B1A]">
+      
+      {/* 🔥 PASS setCurrentPage */}
+      <Header 
+        onLogout={handleLogout} 
+        setCurrentPage={setCurrentPage} 
+      />
 
-        <nav className="nav-menu">
-          <button
-            className={`nav-btn ${currentPage === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('dashboard')}
-          >
-            📊 Dashboard
-          </button>
+      <div className="flex-grow admin-container p-4 text-white">
+        
+        {/* ✅ DEFAULT DASHBOARD */}
+        {currentPage === "dashboard" && <GameSearch />}
 
-          <button
-            className={`nav-btn ${currentPage === 'games' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('games')}
-          >
-            🎮 Games
-          </button>
-
-          {/* ✅ Only Admin can see Operators */}
-          {isAdmin && (
-            <button
-              className={`nav-btn ${currentPage === 'operators' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('operators')}
-            >
-              👥 Operators
-            </button>
-          )}
-
-          <button
-            className={`nav-btn ${currentPage === 'report' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('report')}
-          >
-            📈 Reports
-          </button>
-        </nav>
+        {/* ✅ STATEMENT PAGE */}
+        {currentPage === "statement" && <Statement />}
       </div>
 
-      <div className="main-content">
-        <header className="top-header">
-          <div className="header-left">
-            <h1>Admin Dashboard</h1>
-          </div>
-
-          <div className="header-right">
-            <div className="user-info">
-              <span className="user-name">{user?.name}</span>
-              <span className="user-role">{user?.role}</span>
-            </div>
-
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        </header>
-
-        <div className="page-content">
-          {currentPage === 'dashboard' && <Dashboard />}
-          {currentPage === 'games' && <Games />}
-
-          {/* ✅ Protection (extra safety) */}
-          {currentPage === 'operators' && isAdmin && <Operators />}
-
-          {currentPage === 'report' && <Report />}
-        </div>
-      </div>
+      <Footer />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
